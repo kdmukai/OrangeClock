@@ -112,6 +112,9 @@ def getNextHalving():
 
 
 def displayInit():
+    refresh(ssd, False)
+    ssd.wait_until_ready()
+    time.sleep(5)
     refresh(ssd, True)
     ssd.wait_until_ready()
     time.sleep(5)
@@ -300,7 +303,9 @@ def main():
         ssd.wait_until_ready()
         ssd.sleep()
         if not issue:
-            time.sleep(600)  # 600 normal
+            sleep_for = 60
+            print("Sleeping for %ds" % sleep_for)
+            time.sleep(sleep_for)  # 600 normal
         else:
             wifi.disconnect()
             debugConsoleOutput("6")

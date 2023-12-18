@@ -69,7 +69,7 @@ def refresh(device, clear=False):
     else:
         if clear:
             DObject.devices[device].clear()  # Clear the pending set
-            device.fill(0)
+            device.fill(1)
         else:
             for obj in DObject.devices[device]:
                 obj.show()
@@ -133,7 +133,8 @@ class DObject():
     def show(self):
         wri = self.writer
         dev = self.device
-        dev.fill_rect(self.col, self.row, self.width, self.height, self.bgcolor)
+#        dev.fill_rect(self.col, self.row, self.width, self.height, self.bgcolor)
+        dev.fill_rect(self.col, self.row, self.width, self.height, 1)
         if isinstance(self.bdcolor, bool):  # No border
             if self.has_border:  # Border exists: erase it
                 dev.rect(self.col - 2, self.row - 2, self.width + 4, self.height + 4, self.bgcolor)
