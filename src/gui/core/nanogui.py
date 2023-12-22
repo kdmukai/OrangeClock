@@ -61,6 +61,7 @@ def fillcircle(dev, x0, y0, r, color): # Draw filled circle
 # The pend mechanism enables a displayable object to postpone its renedering
 # until it is complete: efficient for e.g. Dial which may have multiple Pointers
 def refresh(device, clear=False):
+    print("refresh(clear=%s)" % clear)
     if not isinstance(device, framebuf.FrameBuffer):
         raise ValueError('Device must be derived from FrameBuffer.')
     if device not in DObject.devices:
@@ -133,7 +134,7 @@ class DObject():
     def show(self):
         wri = self.writer
         dev = self.device
-        dev.fill_rect(self.col, self.row, self.width, self.height, self.bgcolor)
+        dev.fill_rect(self.col - 4, self.row, self.width + 8, self.height, self.bgcolor)
         if isinstance(self.bdcolor, bool):  # No border
             if self.has_border:  # Border exists: erase it
                 dev.rect(self.col - 2, self.row - 2, self.width + 4, self.height + 4, self.bgcolor)

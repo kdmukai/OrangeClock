@@ -33,6 +33,7 @@ dispVersion2 = "mts" #mts = moscow time satsymbol / #mts2 = moscow time satusd i
 npub = ""
 
 def connectWIFI():
+    print("connectWIFI()")
     global wifi
     wifi = network.WLAN(network.STA_IF)
     wifi.active(True)
@@ -58,11 +59,27 @@ def setSecrets(SSID, PASSWORD):
 
 
 def getPrice(currency): # change USD to EUR for price in euro
+    print("getPrice()")
     gc.collect()
     data = urequests.get("https://mempool.space/api/v1/prices")
     price = data.json()[currency]
     data.close()
     return price
+
+
+def getPriceStr(currency):
+    price_str = str(getPrice(currency))
+    divider = ","
+    if currency != "USD":
+        divider = "."
+
+    if len(price_str) > 3:
+        price_str = price_str[:-3] + divider + price_str[-3:]
+
+    if len(price_str) > 7:
+        price_str = price_str[:-7] + divider + price_str[-7:]
+    
+    return price_str
 
 
 def getMoscowTime():
@@ -71,6 +88,7 @@ def getMoscowTime():
 
 
 def getLastBlock():
+    print("getLastBlock()")
     gc.collect()
     data = urequests.get("https://mempool.space/api/blocks/tip/height")
     block = data.text
@@ -79,6 +97,7 @@ def getLastBlock():
 
 
 def getMempoolFees():
+    print("getMempoolFees()")
     gc.collect()
     data = urequests.get("https://mempool.space/api/v1/fees/recommended")
     jsonData = data.json()
@@ -143,6 +162,12 @@ def main():
     i = 1
     connectWIFI()
     displayInit()
+
+    # refresh(ssd, True)
+    # print("final wait")
+    # ssd.wait_until_ready()
+    # print("done with wait")
+
     while True:
         debugConsoleOutput("2")
         if issue:
@@ -185,10 +210,10 @@ def main():
                 textRow2 = getMoscowTime()
             elif dispVersion2 == "fp1":
                 symbolRow2 = "K"
-                textRow2 = str(getPrice("USD"))
+                textRow2 = getPriceStr("USD")
             elif dispVersion2 == "fp2":
                 symbolRow2 = "B"
-                textRow2 = str(getPrice("EUR"))
+                textRow2 = getPriceStr("EUR")
             else:
                 symbolRow2 = "H"
                 textRow2 = getMoscowTime()        
@@ -207,9 +232,8 @@ def main():
             print("Fees: Handling run-time error:", err)
             debugConsoleOutput("5")
             issue = True
-        if wifi.isconnected():
-            refresh(ssd, True)
-            ssd.wait_until_ready()
+
+
         Label(
             wri_small,
             labelRow1,
@@ -300,7 +324,7 @@ def main():
         ssd.wait_until_ready()
         ssd.sleep()
         if not issue:
-            time.sleep(600)  # 600 normal
+            time.sleep(60)  # 600 normal
         else:
             wifi.disconnect()
             debugConsoleOutput("6")

@@ -81,6 +81,8 @@ class EPD(framebuf.FrameBuffer):
         cmd(b'\x11', b'\x03')
         cmd(b'\x21', b'\x00\x80')
 
+        cmd(b'\x3C', b'\x00')
+
         cmd(b'\x44', b'\x00\x0F')
         cmd(b'\x45', b'\x00\x00\x27\x01')
         cmd(b'\x4E', b'\x00')
@@ -213,7 +215,8 @@ class EPD(framebuf.FrameBuffer):
 
     # draw the current frame memory. Blocking time ~180ms
     def show(self, buf1=bytearray(1)):
-        
+        from phew import logging
+        logging.debug("show")
         if not self._full:
             self.init_partial()
         
@@ -242,7 +245,7 @@ class EPD(framebuf.FrameBuffer):
             hpc = 0  # Horizontal pixel count
             for _ in range(len(mvb)):
                 self._cs(0)
-                buf1[0] = ~mvb[idx]  # INVERSION HACK ~data
+                buf1[0] = mvb[idx]  # INVERSION HACK ~data
                 send(buf1)
                 self._cs(1)
                 idx -= self.width
