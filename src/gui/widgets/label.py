@@ -8,7 +8,7 @@ from gui.core.writer import Writer
 
 # text: str display string int save width
 class Label(DObject):
-    def __init__(self, writer, row, col, text, invert=False, fgcolor=None, bgcolor=None, bdcolor=False):
+    def __init__(self, writer, row, col=0, text="", invert=False, fgcolor=None, bgcolor=None, bdcolor=False):
         # Determine width of object
         if isinstance(text, int):
             width = text

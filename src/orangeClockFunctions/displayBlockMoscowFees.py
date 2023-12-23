@@ -68,16 +68,9 @@ def getPrice(currency): # change USD to EUR for price in euro
 
 
 def getPriceStr(currency):
-    price_str = str(getPrice(currency))
-    divider = ","
+    price_str = f"{getPrice(currency):,}"
     if currency != "USD":
-        divider = "."
-
-    if len(price_str) > 3:
-        price_str = price_str[:-3] + divider + price_str[-3:]
-
-    if len(price_str) > 7:
-        price_str = price_str[:-7] + divider + price_str[-7:]
+        price_str = price_str.replace(",", ".")
     
     return price_str
 
@@ -163,11 +156,6 @@ def main():
     connectWIFI()
     displayInit()
 
-    # refresh(ssd, True)
-    # print("final wait")
-    # ssd.wait_until_ready()
-    # print("done with wait")
-
     while True:
         debugConsoleOutput("2")
         if issue:
@@ -234,97 +222,103 @@ def main():
             issue = True
 
 
-        Label(
-            wri_small,
-            labelRow1,
-            int(
-                (
-                    rowMaxDisplay
-                    - Writer.stringlen(wri_small, blockHeight)
-                    + Writer.stringlen(wri_iconsSmall, symbolRow1)
-                    + 4  # spacing
-                )
-                / 2
+        labels = [
+            Label(
+                wri_small,
+                labelRow1,
+                int(
+                    (
+                        rowMaxDisplay
+                        - Writer.stringlen(wri_small, blockHeight)
+                        + Writer.stringlen(wri_iconsSmall, symbolRow1)
+                        + 4  # spacing
+                    )
+                    / 2
+                ),
+                blockHeight,
             ),
-            blockHeight,
-        )
 
-        Label(
-            wri_iconsSmall,
-            labelRow1 + 2,  # center icon with text
-            int(
-                (
-                    rowMaxDisplay
-                    - Writer.stringlen(wri_iconsSmall, symbolRow1)
-                    - Writer.stringlen(wri_small, blockHeight)
-                    - 4  # spacing
-                )
-                / 2
+            Label(
+                wri_iconsSmall,
+                labelRow1 + 2,  # center icon with text
+                int(
+                    (
+                        rowMaxDisplay
+                        - Writer.stringlen(wri_iconsSmall, symbolRow1)
+                        - Writer.stringlen(wri_small, blockHeight)
+                        - 4  # spacing
+                    )
+                    / 2
+                ),
+                symbolRow1,
             ),
-            symbolRow1,
-        )
-        Label(
-            wri_large,
-            labelRow2,
-            int(
-                (
-                    rowMaxDisplay
-                    - Writer.stringlen(wri_large, textRow2)
-                    + Writer.stringlen(wri_iconsLarge, symbolRow2)
-                    + 2  # spacing
-                )
-                / 2
+            Label(
+                wri_large,
+                labelRow2,
+                int(
+                    (
+                        rowMaxDisplay
+                        - Writer.stringlen(wri_large, textRow2)
+                        + Writer.stringlen(wri_iconsLarge, symbolRow2)
+                        + 2  # spacing
+                    )
+                    / 2
+                ),
+                textRow2,
             ),
-            textRow2,
-        )
-        Label(
-            wri_iconsLarge,
-            labelRow2,  # + 10 for centered satsymbol
-            int(
-                (
-                    rowMaxDisplay
-                    - Writer.stringlen(wri_iconsLarge, symbolRow2)
-                    - Writer.stringlen(wri_large, textRow2)
-                    - 2  # spacing
-                )
-                / 2
+            Label(
+                wri_iconsLarge,
+                labelRow2,  # + 10 for centered satsymbol
+                int(
+                    (
+                        rowMaxDisplay
+                        - Writer.stringlen(wri_iconsLarge, symbolRow2)
+                        - Writer.stringlen(wri_large, textRow2)
+                        - 2  # spacing
+                    )
+                    / 2
+                ),
+                symbolRow2,
             ),
-            symbolRow2,
-        )
-        Label(
-            wri_small,
-            labelRow3,
-            int(
-                (
-                    rowMaxDisplay
-                    - Writer.stringlen(wri_small, mempoolFees)
-                    + Writer.stringlen(wri_iconsSmall, symbolRow3)
-                    + 4  # spacing
-                )
-                / 2
+            Label(
+                wri_small,
+                labelRow3,
+                int(
+                    (
+                        rowMaxDisplay
+                        - Writer.stringlen(wri_small, mempoolFees)
+                        + Writer.stringlen(wri_iconsSmall, symbolRow3)
+                        + 4  # spacing
+                    )
+                    / 2
+                ),
+                mempoolFees,
             ),
-            mempoolFees,
-        )
-        Label(
-            wri_iconsSmall,
-            labelRow3 + 1,  # center icon with text
-            int(
-                (
-                    rowMaxDisplay
-                    - Writer.stringlen(wri_iconsSmall, symbolRow3)
-                    - Writer.stringlen(wri_small, mempoolFees)
-                    - 4  # spacing
-                )
-                / 2
-            ),
-            symbolRow3,
-        )
+            Label(
+                wri_iconsSmall,
+                labelRow3 + 1,  # center icon with text
+                int(
+                    (
+                        rowMaxDisplay
+                        - Writer.stringlen(wri_iconsSmall, symbolRow3)
+                        - Writer.stringlen(wri_small, mempoolFees)
+                        - 4  # spacing
+                    )
+                    / 2
+                ),
+                symbolRow3,
+            )
+        ]
 
         refresh(ssd, False)
         ssd.wait_until_ready()
         ssd.sleep()
         if not issue:
             time.sleep(60)  # 600 normal
+
+            print("clearing labels")
+            for label in labels:
+                label.value("")
         else:
             wifi.disconnect()
             debugConsoleOutput("6")
